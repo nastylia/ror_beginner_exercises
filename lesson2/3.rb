@@ -1,11 +1,10 @@
-arr =[]
-arr << 0
-arr << 1
+arr =[0, 1]
 
-i = 0
-while arr[i] + arr[i+1] <= 100 do
-  arr << arr[i] + arr[i+1]
-  i += 1
+sum = 1
+
+while sum < 100 do
+  arr << sum
+  sum = arr[-1] + arr[-2]
 end
 
 puts "#{arr}"
