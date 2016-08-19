@@ -15,10 +15,20 @@ class Station
     puts "Поезд отправлен #{train.id} со станции #{name}" if @trains.delete(train)
   end
 
-  def to_s
-    print "#{name}, trains: "
-    @trains.each {|t| print "#{t.to_s}, "}
-    puts ""
+  def list_trains_by_type
+    passenger_trains = []
+    cargo_trains = []
+    @trains.each do |train|
+      if train.type == "cargo"
+        cargo_trains << train
+      else
+        passenger_trains << train
+      end
+    end
+    puts "Пассажирские поезда - #{passenger_trains.length}:"
+    passenger_trains.each { |train| puts "#{train.id}"}
+    puts "Грузовые поезда - #{cargo_trains.length}:"
+    cargo_trains.each { |train| puts "#{train.id}"}
   end
 
 

@@ -48,7 +48,4 @@ class Route
     @stations[station_index] if station_index >= 0
   end
 
-  def to_s
-    @stations.each do |st| puts st.to_s end
-  end
 end
