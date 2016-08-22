@@ -15,21 +15,19 @@ class Station
     puts "Поезд отправлен #{train.id} со станции #{name}" if @trains.delete(train)
   end
 
-  def list_trains_by_type
-    passenger_trains = []
-    cargo_trains = []
+  def list_trains_by_type(type)
+    trains_to_list = []
     @trains.each do |train|
-      if train.type == "cargo"
-        cargo_trains << train
-      else
-        passenger_trains << train
+      if train.type == type
+        trains_to_list << train
       end
     end
-    puts "Пассажирские поезда - #{passenger_trains.length}:"
-    passenger_trains.each { |train| puts "#{train.id}"}
-    puts "Грузовые поезда - #{cargo_trains.length}:"
-    cargo_trains.each { |train| puts "#{train.id}"}
+    puts "Список поездов по типу(#{type}) - #{trains_to_list.length}:"
+    trains_to_list.each { |train| puts "#{train.id}"}
   end
 
+  def equal_name_station(station)
+    self.name == station.name
+  end
 
 end

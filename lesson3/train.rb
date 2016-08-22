@@ -15,8 +15,8 @@ class Train
   end
 
   def speed_down(speed)
-      @speed -= speed
-      @speed = 0 if @speed < 0
+    @speed -= speed
+    @speed = 0 if @speed < 0
   end
 
   def speed
@@ -42,11 +42,8 @@ class Train
   end
 
   def move_next_station
-    if !@route
-      puts "Нет маршрута у поезда"
-      return
-    end
-    next_station = @route.get_next_station(@current_station)
+    return puts "Нет маршрута у поезда" unless @route
+    next_station = @route.get_next_station_index(@current_station)
     if next_station == @current_station
       puts "Поезд уже на конечной станции"
     else
@@ -57,11 +54,8 @@ class Train
   end
 
   def move_prev_station
-    if !@route
-      puts "Нет маршрута у поезда"
-      return
-    end
-    prev_station = @route.get_prev_station(@current_station)
+    return puts "Нет маршрута у поезда" unless @route
+    prev_station = @route.get_prev_station_index(@current_station)
     if prev_station == @current_station
       puts "Поезд уже на начальной станции"
     else
@@ -72,27 +66,18 @@ class Train
   end
 
   def show_current_station
-    if !@route
-      puts "Нет маршрута у поезда"
-      return
-    end
+    return puts "Нет маршрута у поезда" unless @route
     puts "Текущая станция: #{@route.get_station(@current_station).name}"
   end
 
   def show_next_station
-    if !@route
-      puts "Нет маршрута у поезда"
-      return
-    end
+    return puts "Нет маршрута у поезда" unless @route
     next_station = @route.get_station(@current_station + 1)
     puts "Следующая станция: #{next_station.name}" if next_station
   end
 
   def show_prev_station
-    if !@route
-      puts "Нет маршрута у поезда"
-      return
-    end
+    return puts "Нет маршрута у поезда" unless @route
     prev_station = @route.get_station(@current_station - 1)
     puts "Предыдущая станция: #{prev_station.name}" if prev_station
   end
