@@ -10,7 +10,15 @@ class Main
 
   def initialize
     @stations = []
-    @trains = []
+    # решила создать хэш для поездов.
+    # здесь будут храниться все созданные поезда.
+    # ключ - объект типа Train, значение - true (если поезд уже добавлен на станцию)
+    # false (если поезд еще никуда не добавлен)
+    # Не хотела чтобы мы могли добавлять один и тот же поезд несколько раз на разные
+    # или одинаковые станции...
+    # Хотя не уверена в таком решении - может лучше было создать еще один массив,
+    # с уже добавленными поездами? (что-нибудь в таком роде...)
+    @trains = {}
   end
 
 
@@ -49,7 +57,9 @@ class Main
 
   end
 
-
+  # все методы, кроме меню, спрятала в privateб чтобы управление из вне класса шло только через
+  # меню... то же касается атрибутов на чтение. Решила что они только внутренние и никому больше
+  # не нужен к ним доступ
   private
 
   attr_reader :stations, :trains
@@ -68,9 +78,9 @@ class Main
     train_type = gets.chomp
 
     if cargo_type? train_type
-      @trains << CargoTrain.new(train_name)
+      @trains[CargoTrain.new(train_name)] = false
     else
-      @trains << PassengerTrain.new(train_name)
+      @trains[PassengerTrain.new(train_name)] = false
     end
 
     list_all_trains
@@ -100,13 +110,14 @@ class Main
   end
 
   def add_train_to_station
-    train = ask_for_train_from_list("Выберите поезд из списка, который поместить на станцию:")
+    train = ask_for_train_not_on_station_from_list("Выберите поезд из списка, который поместить на станцию:")
     return puts "Нет такого поезда" unless train
 
     station = ask_for_station_from_list("Выберите станцию из списка, куда поместить поезд")
     return puts "Нет такой станции" unless station
 
     station.train_arrived(train)
+    trains[train] = true
   end
 
   def list_stations_and_trains_on_them
@@ -130,7 +141,7 @@ class Main
 
   def list_all_trains
     puts "Список всех поездов:"
-    print_list_by_name(trains)
+    print_list_by_name(trains.keys)
   end
 
   def print_list_by_name(arr)
@@ -138,7 +149,7 @@ class Main
   end
 
   def get_item_by_name(item_name, list_to_search)
-    i = 0
+    i = list_to_search.length + 1
     list_to_search.each_with_index { |item, index| i = index if item.name == item_name}
     list_to_search[i]
   end
@@ -149,10 +160,15 @@ class Main
     item_name = gets.chomp
 
     item = get_item_by_name(item_name, list_to_search)
+    item
   end
 
   def ask_for_train_from_list(message)
-    ask_for_item_from_list(message, trains)
+    ask_for_item_from_list(message, trains.keys)
+  end
+
+  def ask_for_train_not_on_station_from_list(message)
+    ask_for_item_from_list(message, trains.select {|k, v| v == false}.keys)
   end
 
   def ask_for_station_from_list(message)
