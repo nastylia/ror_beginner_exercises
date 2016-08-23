@@ -15,11 +15,12 @@ class Station
     puts "Список поездов на станции #{name}:"
     trains.each { |train| puts "   #{train.name}"}
   end
-=begin
+
   def train_departured(train)
     puts "Поезд отправлен #{train.name} со станции #{name}" if @trains.delete(train)
   end
 
+=begin
   def list_trains_by_type(type)
     trains_to_list = []
     @trains.each do |train|

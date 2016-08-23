@@ -1,12 +1,14 @@
 class Train
   attr_reader :name
   attr_reader :type, :speed
+  attr_accessor :current_station
 
   def initialize(name, type)
     @name = name
     @carriages = []
     @type = type
     @speed = 0
+    @current_station = nil
   end
 
   def speed_up(speed)
@@ -32,6 +34,12 @@ class Train
 
   def carriage_number
     puts "Количество вагонов в поезде #{@carriages.length}"
+  end
+
+  def move_to_station(station)
+    current_station.train_departured(self) if current_station
+    station.train_arrived(self)
+    self.current_station = station
   end
 
  # def cargo_type?

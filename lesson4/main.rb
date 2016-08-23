@@ -9,15 +9,7 @@ require_relative 'passenger_carriage'
 class Main
 
   def initialize
-    @stations = []
-    # решила создать хэш для поездов.
-    # здесь будут храниться все созданные поезда.
-    # ключ - объект типа Train, значение - true (если поезд уже добавлен на станцию)
-    # false (если поезд еще никуда не добавлен)
-    # Не хотела чтобы мы могли добавлять один и тот же поезд несколько раз на разные
-    # или одинаковые станции...
-    # Хотя не уверена в таком решении - может лучше было создать еще один массив,
-    # с уже добавленными поездами? (что-нибудь в таком роде...)
+    @stations = {}
     @trains = {}
   end
 
@@ -67,7 +59,7 @@ class Main
   def create_station
     puts "Имя новой станции?"
     station_name = gets.chomp
-    @stations << Station.new(station_name)
+    @stations[station_name] = Station.new(station_name)
     list_all_stations
   end
 
@@ -78,9 +70,9 @@ class Main
     train_type = gets.chomp
 
     if cargo_type? train_type
-      @trains[CargoTrain.new(train_name)] = false
+      @trains[train_name] = CargoTrain.new(train_name)
     else
-      @trains[PassengerTrain.new(train_name)] = false
+      @trains[train_name] = PassengerTrain.new(train_name)
     end
 
     list_all_trains
@@ -110,18 +102,18 @@ class Main
   end
 
   def add_train_to_station
-    train = ask_for_train_not_on_station_from_list("Выберите поезд из списка, который поместить на станцию:")
+    train = ask_for_train_from_list("Выберите поезд из списка, который поместить на станцию:")
     return puts "Нет такого поезда" unless train
 
     station = ask_for_station_from_list("Выберите станцию из списка, куда поместить поезд")
     return puts "Нет такой станции" unless station
 
-    station.train_arrived(train)
-    trains[train] = true
+    train.move_to_station(station)
+    #station.train_arrived(train)
   end
 
   def list_stations_and_trains_on_them
-    stations.each {|station| station.list_trains_on_station}
+    stations.each {|name, station| station.list_trains_on_station}
   end
 
 
@@ -136,7 +128,7 @@ class Main
 
   def list_all_stations
     puts "Список всех станций:"
-    print_list_by_name(stations)
+    print_list_by_name(stations.keys)
   end
 
   def list_all_trains
@@ -145,30 +137,19 @@ class Main
   end
 
   def print_list_by_name(arr)
-    arr.each { |item| puts "#{item.name}"}
+    arr.each { |name| puts "#{name}"}
   end
 
-  def get_item_by_name(item_name, list_to_search)
-    i = list_to_search.length + 1
-    list_to_search.each_with_index { |item, index| i = index if item.name == item_name}
-    list_to_search[i]
-  end
-
-  def ask_for_item_from_list(message, list_to_search)
+  def ask_for_item_from_list(message, hash_to_search)
     puts "#{message}"
-    print_list_by_name(list_to_search)
+    print_list_by_name(hash_to_search.keys)
     item_name = gets.chomp
 
-    item = get_item_by_name(item_name, list_to_search)
-    item
+    item = hash_to_search[item_name]
   end
 
   def ask_for_train_from_list(message)
-    ask_for_item_from_list(message, trains.keys)
-  end
-
-  def ask_for_train_not_on_station_from_list(message)
-    ask_for_item_from_list(message, trains.select {|k, v| v == false}.keys)
+    ask_for_item_from_list(message, trains)
   end
 
   def ask_for_station_from_list(message)
