@@ -1,11 +1,16 @@
+require_relative 'manufacturer'
+require_relative 'instance_counter'
+
 class Train
   include Manufacturer
+  include InstanceCounter
 
   attr_reader :name
   attr_reader :type, :speed
   attr_accessor :current_station
 
   @@trains = {}
+  @@instance_objects = 0
 
   def initialize(name, type)
     # у меня атрибут @name и есть Номер поезда - произвольная строка
@@ -15,6 +20,7 @@ class Train
     @speed = 0
     @current_station = nil
     @@trains[name] = self
+    register_instance
   end
 
   def speed_up(speed)
