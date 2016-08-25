@@ -7,22 +7,19 @@ module InstanceCounter
 
   module ClassMethods
 
-    @@instance_objects = 0
+    attr_accessor :instance_objects
 
     def instances
-      puts "#{@@instance_objects}"
+      self.instance_objects ||= 0
     end
 
-    def increase
-      @@instance_objects += 1
-    end
   end
 
   module InstanceMethods
     protected
 
     def register_instance
-      self.class.increase
+      self.class.instance_objects = self.class.instances + 1
     end
   end
 
