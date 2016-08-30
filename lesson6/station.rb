@@ -7,15 +7,10 @@ class Station
 
   def initialize(name)
     @name = name
+    validate!
     @trains = []
     @@all_stations << self
     register_instance
-  end
-
-  def validate!
-    raise "Name cannot be nil" if name.nil?
-    raise "Name cannot be empty" if name.empty?
-    true
   end
 
   def valid?
@@ -39,6 +34,14 @@ class Station
 
   def self.all
     @@all_stations
+  end
+
+  private
+
+  def validate!
+    raise "Name cannot be nil" if name.nil?
+    raise "Name cannot be empty" if name.empty?
+    true
   end
 
 =begin

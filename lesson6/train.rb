@@ -27,14 +27,6 @@ class Train
     register_instance
   end
 
-  def validate!
-    raise "Name cannot be nil" if name.nil?
-    raise "Name cannot be empty" if name.empty?
-    raise "Wrong type format for train name!" if name !~ NAME_FORMAT
-    raise "Wrong type, should be cargo or passenger" unless TYPES.include? type.to_sym
-    true
-  end
-
   def valid?
     validate!
   rescue
@@ -74,6 +66,16 @@ class Train
 
   def self.find(name)
     @@trains[name]
+  end
+
+  private
+
+  def validate!
+    raise "Name cannot be nil" if name.nil?
+    raise "Name cannot be empty" if name.empty?
+    raise "Wrong type format for train name!" if name !~ NAME_FORMAT
+    raise "Wrong type, should be cargo or passenger" unless TYPES.include? type.to_sym
+    true
   end
 
 
