@@ -23,6 +23,9 @@ class Main
       puts "4. Отцепить вагон от поезда"
       puts "5. Поместить поезд на станцию"
       puts "6. Просмотреть списoк станций и список поездов на станции"
+      puts "7. Вывести список вагонов у поезда"
+      puts "8. Вывести список поездов на станции"
+      puts "9. Занять место или объем в вагоне"
       puts "0. Выйти из меню"
 
       menu_item = gets.chomp.to_i
@@ -40,6 +43,12 @@ class Main
         add_train_to_station
       when 6
         list_stations_and_trains_on_them
+      when 7
+        list_carriages_for_train
+      when 8
+        list_trains_on_station
+      when 9
+        occupy_seat_or_volume
       when 0
         break
       else
@@ -91,10 +100,15 @@ class Main
     puts "Укажите тип вагона, который будете добавлять: (cargo или passenger)"
     carriage_type = gets.chomp
     if cargo_type? carriage_type
-      train.add_carriage(CargoCarriage.new)
+      puts "Укажите общий объем вагона:"
+      volume = gets.chomp.to_f
+      train.add_carriage(CargoCarriage.new(volume))
     else
-      train.add_carriage(PassengerCarriage.new)
+      puts "Укажите количество мест в вагоне:"
+      seats_number = gets.chomp.to_i
+      train.add_carriage(PassengerCarriage.new(seats_number))
     end
+    
     train.carriage_number
 
   end
@@ -120,6 +134,41 @@ class Main
 
   def list_stations_and_trains_on_them
     stations.each {|name, station| station.list_trains_on_station}
+  end
+
+  def list_carriages_for_train
+    train = ask_for_train_from_list("Выберите поезд из списка:")
+    return puts "Нет такого поезда" unless train
+
+    train.get_carriages do |carriages|
+      carriages.each do |number, carriage|
+        puts "Номер вагона: #{number}, #{carriage.to_s}"
+      end
+    end
+  end
+
+  def list_trains_on_station
+    station = ask_for_station_from_list("Выберите станцию из списка:")
+    return puts "Нет такой станции" unless station
+
+    station.get_trains {|train| puts train}
+  end
+
+  def occupy_seat_or_volume
+    train = ask_for_train_from_list("Выберите поезд из списка:")
+    return puts "Нет такого поезда" unless train
+
+    carriage = ask_for_carriage_from_list("Выберите вагон из списка:", train)
+    return puts "Нет такого вагона" unless carriage
+
+    if carriage.cargo_type?
+      puts "Какой объем занять?"
+      volume = gets.chomp.to_f
+      carriage.take_volume(volume)
+    else
+      carriage.take_a_seat
+    end
+
   end
 
 
@@ -160,5 +209,11 @@ class Main
 
   def ask_for_station_from_list(message)
     ask_for_item_from_list(message, stations)
+  end
+
+  def ask_for_carriage_from_list(message, train)
+    train.get_carriages do |carriages|
+      ask_for_item_from_list(message, carriages)
+    end
   end
 end

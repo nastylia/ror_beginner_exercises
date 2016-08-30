@@ -13,6 +13,10 @@ class Station
     register_instance
   end
 
+  def get_trains(&block)
+    block.call(trains) if block_given? && trains.length > 0
+  end
+
   def valid?
     validate!
   rescue

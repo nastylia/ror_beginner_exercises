@@ -14,6 +14,22 @@ class Carriage
     true
   end
 
+  def show_free_items_number
+    free_item_number
+  end
+
+  def show_occupied_items_number
+    item_number - free_item_number
+  end
+
+  def to_s
+    "тип: #{type.to_s}, свободно: #{show_free_items_number}, занято: #{show_occupied_items_number}"
+  end
+
+  def cargo_type?
+    type == :cargo
+  end
+
 
   protected
 
@@ -23,14 +39,6 @@ class Carriage
     else
       no_free_items
     end
-  end
-
-  def show_free_items_number(message)
-    puts "#{message}: #{free_item_number}"
-  end
-
-  def show_occupied_items_number(message)
-    puts "#{message}: #{item_number - free_item_number}"
   end
 
   private
@@ -52,6 +60,7 @@ class Carriage
 
   def validate!
     raise "Wrong type, should be cargo or passenger" unless Train::TYPES.include? type.to_sym
+    raise "Negative number of volume or seats!" if item_number < 0
     true
   end
 

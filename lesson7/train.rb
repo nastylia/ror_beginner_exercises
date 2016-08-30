@@ -7,7 +7,7 @@ class Train
 
   attr_reader :name
   attr_reader :type, :speed
-  attr_accessor :current_station
+  attr_accessor :current_station, :carriages
 
   TYPES = [:cargo, :passenger]
   NAME_FORMAT = /^[\da-z]{3}-?[\da-z]{2}$/i
@@ -20,11 +20,19 @@ class Train
     @name = name
     @type = type
     validate!
-    @carriages = []
+    @carriages = {}
     @speed = 0
     @current_station = nil
     @@trains[name] = self
     register_instance
+  end
+
+  def to_s
+    "Номер поезда: #{name}, тип: #{type.to_s}, количество вагонов: #{carriages.length}"
+  end
+
+  def get_carriages(&block)
+    block.call(carriages) if block_given? && carriages.length > 0
   end
 
   def valid?
@@ -47,15 +55,15 @@ class Train
   end
 
   def add_carriage(carriage)
-    @carriages << carriage if type == carriage.type
+    self.carriages[carriages.length.to_s] = carriage if type == carriage.type
   end
 
   def delete_carriage
-    @carriages.pop if speed == 0
+    self.carriages.shift if speed == 0
   end
 
   def carriage_number
-    @carriages.length
+    carriages.length
   end
 
   def move_to_station(station)
