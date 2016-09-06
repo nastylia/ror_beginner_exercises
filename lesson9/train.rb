@@ -70,5 +70,4 @@ class Train
     station.train_arrived(self)
     self.current_station = station
   end
-
 end
